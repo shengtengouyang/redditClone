@@ -1,4 +1,4 @@
-package com.shen.redditclone.model;
+package com.shen.redditclone.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
