@@ -1,24 +1,35 @@
 package com.shen.redditclone.bootstrap;
 
 import com.shen.redditclone.domain.Link;
+import com.shen.redditclone.domain.Role;
+import com.shen.redditclone.domain.User;
 import com.shen.redditclone.repositery.CommentRepository;
 import com.shen.redditclone.repositery.LinkRepository;
+import com.shen.redditclone.repositery.RoleRepository;
+import com.shen.redditclone.repositery.UserRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class DatabaseLoader implements CommandLineRunner {
 
+    @NonNull
     private LinkRepository linkRepository;
+    @NonNull
     private CommentRepository commentRepository;
-
-    public DatabaseLoader(LinkRepository linkRepository, CommentRepository commentRepository) {
-        this.linkRepository = linkRepository;
-        this.commentRepository = commentRepository;
-    }
+    @NonNull
+    private RoleRepository roleRepository;
+    @NonNull
+    private UserRepository userRepository;
 
     @Override
     public void run(String... args) {
@@ -42,5 +53,29 @@ public class DatabaseLoader implements CommandLineRunner {
 
         long linkCount = linkRepository.count();
         System.out.println("Number of links in the database: " + linkCount );
+        addUsersAndRoles();
+    }
+
+    private void addUsersAndRoles() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String secret = "{bcrypt}" + encoder.encode("password");
+
+        Role userRole = new Role("ROLE_USER");
+        roleRepository.save(userRole);
+        Role adminRole = new Role("ROLE_ADMIN");
+        roleRepository.save(adminRole);
+
+        User user = new User("user@gmail.com",secret,true);
+        user.addRole(userRole);
+        userRepository.save(user);
+
+        User admin = new User("admin@gmail.com",secret,true);
+        admin.addRole(adminRole);
+        userRepository.save(admin);
+
+        User master = new User("super@gmail.com",secret,true);
+        master.addRoles(new HashSet<>(Arrays.asList(userRole,adminRole)));
+        userRepository.save(master);
+
     }
 }

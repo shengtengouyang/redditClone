@@ -38,6 +38,8 @@ public class LinkController {
     public Link create(@ModelAttribute Link link) {
         return linkRepository.save(link);
     }
+
+
     @GetMapping("/link/{id}")
     public String read(@PathVariable Long id, Model model) {
         Optional<Link> link = linkRepository.findById(id);
