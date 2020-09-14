@@ -4,6 +4,7 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,19 +21,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
+           .authorizeRequests()
                 .requestMatchers(EndpointRequest.to("info")).permitAll()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
                 .antMatchers("/").permitAll()
                 .antMatchers("/link/submit").hasRole("USER")
                 .antMatchers("/h2-console/**").permitAll()
-                .and()
+           .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
-                .usernameParameter("email")
-                .and()
-                .csrf().disable()
-                .headers().frameOptions().disable();
+                    .loginPage("/login").permitAll()
+                    .usernameParameter("email")
+                    .and()
+                    .logout()
+                    .and()
+                    .csrf().disable()
+                    .headers().frameOptions().disable();
     }
 
     @Override
