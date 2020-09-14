@@ -30,7 +30,7 @@
                         >0 hours ago
                         </time>
                          by
-                        <a href="../auth/profile.html" class="author">Annonymous</a>
+                        <a href="../auth/profile.html" class="author" th:text="${link.getCreatedBy()}">Annonymous</a>
                     </p>
                     <p>
                         <a th:href="@{'/link/'+${link.id} + '# comments'}" class="comments"
