@@ -2,8 +2,8 @@ package com.shen.redditclone.controller;
 
 import com.shen.redditclone.domain.Link;
 import com.shen.redditclone.domain.Vote;
-import com.shen.redditclone.repositery.LinkRepository;
-import com.shen.redditclone.repositery.VoteRepository;
+import com.shen.redditclone.services.LinkService;
+import com.shen.redditclone.services.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -17,21 +17,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VoteController {
     @NonNull
-    private VoteRepository voteRepository;
+    private VoteService voteService;
     @NonNull
-    private LinkRepository linkRepository;
+    private LinkService linkService;
 
     @Secured({"ROLE_USER"})
     @GetMapping("/vote/link/{linkID}/direction/{direction}/voteCount/{voteCount}")
     public int vote(@PathVariable Long linkID, @PathVariable short direction, @PathVariable int voteCount){
-        Optional<Link> optionalLink = linkRepository.findById(linkID);
+        Optional<Link> optionalLink = linkService.findById(linkID);
         if(optionalLink.isPresent()){
             Link link = optionalLink.get();
             Vote vote=new Vote(direction, link);
-            voteRepository.save(vote);
+            voteService.save(vote);
             int updateVoteCount = voteCount + direction;
             link.setVoteCount(updateVoteCount);
-            linkRepository.save(link);
+            linkService.save(link);
             return updateVoteCount;
         }
         return voteCount;

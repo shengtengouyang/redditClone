@@ -1,14 +1,11 @@
 package com.shen.redditclone.controller;
 
-import com.shen.redditclone.RedditcloneApplication;
 import com.shen.redditclone.domain.Comment;
 import com.shen.redditclone.domain.Link;
-import com.shen.redditclone.repositery.CommentRepository;
-import com.shen.redditclone.repositery.LinkRepository;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
+import com.shen.redditclone.services.CommentService;
+import com.shen.redditclone.services.LinkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,25 +14,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class LinkController {
 
-    private LinkRepository linkRepository;
+    private LinkService linkService;
     private static final Logger log = LoggerFactory.getLogger(LinkController.class);
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
-    public LinkController(LinkRepository linkRepository, CommentRepository commentRepository) {
-        this.linkRepository = linkRepository;
-        this.commentRepository = commentRepository;
+    public LinkController(LinkService linkService, CommentService commentService) {
+        this.linkService = linkService;
+        this.commentService = commentService;
     }
 
     // list
     @GetMapping("/")
     public String list(Model model) {
-        model.addAttribute("links",linkRepository.findAll());
+        model.addAttribute("links",linkService.findAll());
         return "link/list";
     }
 
@@ -43,7 +39,7 @@ public class LinkController {
 
     @GetMapping("/link/{id}")
     public String read(@PathVariable Long id,Model model) {
-        Optional<Link> optionalLink = linkRepository.findById(id);
+        Optional<Link> optionalLink = linkService.findById(id);
         if( optionalLink.isPresent() ) {
             Link link = optionalLink.get();
             Comment comment = new Comment();
@@ -76,7 +72,7 @@ public class LinkController {
         }
         else{
             log.info("validation success when submitting a link");
-            linkRepository.save(link);
+            linkService.save(link);
             redirectAttributes
                     .addAttribute("id", link.getId())
                     .addFlashAttribute("success", true);
@@ -88,14 +84,14 @@ public class LinkController {
     @PostMapping("/link/comments")
     public String addComment(Comment comment, BindingResult bindingResult) {
         Long linkID=comment.getLinkID();
-        Optional<Link> link=linkRepository.findById(linkID);
+        Optional<Link> link=linkService.findById(linkID);
         if( bindingResult.hasErrors()||!link.isPresent()) {
             log.info(bindingResult.toString());
             log.info("Something went wrong.");
         } else {
             log.info("New Comment Saved!");
             comment.setLink(link.get());
-            commentRepository.save(comment);
+            commentService.save(comment);
 //            comment.getLink().addComment(comment);
         }
         return "redirect:/link/"+comment.getLinkID();
