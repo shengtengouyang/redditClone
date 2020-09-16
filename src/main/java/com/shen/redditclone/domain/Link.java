@@ -1,10 +1,7 @@
 package com.shen.redditclone.domain;
 
 import com.shen.redditclone.services.BeanUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -22,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter@Setter
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Link extends Auditable{
@@ -30,8 +27,10 @@ public class Link extends Auditable{
     @Id
     @GeneratedValue
     private long id;
+
     @NonNull @NotEmpty(message = "Please enter a title")
     private String title;
+
     @NonNull @URL(message = "Please enter a valid url")
     private String url;
 
@@ -60,7 +59,7 @@ public class Link extends Auditable{
     }
 
     private Date convertToDateViaInstant(LocalDateTime dateToConvert) {
-        return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
 
