@@ -26,11 +26,11 @@
                     <p class="tagline ">submitted
                         <time th:title="${link.getCreationDate()}"
                               th:datetime="${link.getCreationDate()}"
-                              th:text="${link.getPrettyTime()}" class="live-timestamp"
-                        >0 hours ago
-                        </time>
-                         by
-                        <a href="../auth/profile.html" class="author" th:text="${link.getCreatedBy()}">Annonymous</a>
+                              class="live-timestamp"
+                              th:text="${link.getPrettyTime()}"
+                        >1 hour(s)</time> by
+                        <a th:href="@{'/u/' + ${link.getUser().getAlias()}}"
+                           class="author" th:text="${link.getUser().getAlias()}">anonymous</a>
                     </p>
                     <p>
                         <a th:href="@{'/link/'+${link.id} + '# comments'}" class="comments"
