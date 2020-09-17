@@ -1,6 +1,7 @@
 package com.shen.redditclone.domain;
 
 
+import com.shen.redditclone.domain.validator.PasswordsMatch;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.*;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@PasswordsMatch
 public class User implements UserDetails {
 
     @Id @GeneratedValue
@@ -49,6 +51,13 @@ public class User implements UserDetails {
     @NotEmpty(message = "Please enter alias.")
     @Column(nullable = false, unique = true)
     private String alias;
+
+    @NotEmpty(message = "Please enter Password Confirmation")
+    @Transient
+    @Column(length = 100)
+    private String confirmPassword;
+
+    private String activationCode;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
