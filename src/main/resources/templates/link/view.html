@@ -20,12 +20,11 @@
                 </div>
                 <div class="col-11">
                     <p class="title">
-                        <a class="title " th:href="${link.url}" th:text="${link.title}" target="_blank">
+                        <a class="title h2" th:text="${link.title}">
                             What's new in Spring Boot 2?
                         </a>
-                        <span class="domain">(<a th:href="${link.url}" th:text="${link.getDomainName()}">google.com</a>)</span>
                     </p>
-                    <p class="tagline ">submitted
+                    <p class="tagline p-1">submitted
                         <time th:title="${link.getCreationDate()}"
                               th:datetime="${link.getCreationDate()}"
                               class="live-timestamp"
@@ -34,14 +33,13 @@
                         <a th:href="@{'/u/' + ${link.getUser().getAlias()}}"
                            class="author" th:text="${link.getUser().getAlias()}">anonymous</a>
                     </p>
-                    <p> <a th:href="${link.url}" th:text="${link.url}" target="_blank"></a></p>
                     <p>
                         <a href="/" class="comments" th:text="|${link.getComments().size()} comments|"><i class="fas fa-comments"></i> 0 comments</a>
                         <a href="#" class="share"><i class="fas fa-share-square"></i> share</a>
                     </p>
+                    <p class="body h5" th:text="${link.getBody()}"></p>
                 </div>
             </div>
-
             <!-- link comments -->
             <div id="comments" class="comments">
                 <div class="row header">

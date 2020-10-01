@@ -1,7 +1,9 @@
 package com.shen.redditclone.services;
 
 import com.shen.redditclone.domain.Link;
+import com.shen.redditclone.domain.User;
 import com.shen.redditclone.repositery.LinkRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class LinkService {
     }
 
     public Link save(Link link){
+        link.setUser((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return linkRepository.save(link);
     }
 

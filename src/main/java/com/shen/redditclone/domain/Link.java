@@ -28,8 +28,8 @@ public class Link extends Auditable{
     @NonNull @NotEmpty(message = "Please enter a title")
     private String title;
 
-    @NonNull @URL(message = "Please enter a valid url")
-    private String url;
+    @NonNull
+    private String body;
 
     // comments
     @OneToMany(mappedBy = "link")
@@ -45,12 +45,6 @@ public class Link extends Auditable{
     
     public void addComment(Comment comment){
         comments.add(comment);
-    }
-
-    public String getDomainName() throws URISyntaxException {
-        URI uri = new URI(this.url);
-        String domain = uri.getHost();
-        return domain.startsWith("www.") ? domain.substring(4) : domain;
     }
 
     public String getPrettyTime() {
